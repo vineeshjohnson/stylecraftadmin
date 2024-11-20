@@ -2,6 +2,7 @@ import 'package:finalprojectadmin/features/categories/presentation/pages/categor
 import 'package:finalprojectadmin/features/bottom_nav/presentation/bloc/bottomnavcontrole_bloc.dart';
 import 'package:finalprojectadmin/features/bottom_nav/presentation/widgets/bottom_navbar_widget.dart';
 import 'package:finalprojectadmin/features/offer_zone/presentation/screens/offer_screen.dart';
+import 'package:finalprojectadmin/features/order_handling/presentation/screens/list_of_orders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,6 +24,7 @@ class BottomNavigationBars extends StatelessWidget {
           } else if (state is BottomnavcontroleShopState) {
             widget = const OfferScreen();
           } else if (state is BottomnavcontroleCartState) {
+            widget = const ListOfOrders();
           } else if (state is BottomnavcontroleProfileState) {}
           return SafeArea(
             child: Scaffold(
