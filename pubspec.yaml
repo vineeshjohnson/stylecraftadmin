@@ -46,6 +46,7 @@ dependencies:
   quickalert: ^1.1.0
   shared_preferences: ^2.3.2
   shimmer: ^3.0.0
+  fl_chart: ^0.69.2
 
 dev_dependencies:
   flutter_test:

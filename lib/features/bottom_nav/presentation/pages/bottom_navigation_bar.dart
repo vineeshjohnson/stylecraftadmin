@@ -1,8 +1,9 @@
 import 'package:finalprojectadmin/features/categories/presentation/pages/category_page/category_page.dart';
 import 'package:finalprojectadmin/features/bottom_nav/presentation/bloc/bottomnavcontrole_bloc.dart';
 import 'package:finalprojectadmin/features/bottom_nav/presentation/widgets/bottom_navbar_widget.dart';
+import 'package:finalprojectadmin/features/dashboard/presentation/screens/admin_dashboard_screen.dart';
 import 'package:finalprojectadmin/features/offer_zone/presentation/screens/offer_screen.dart';
-import 'package:finalprojectadmin/features/order_handling/presentation/screens/list_of_orders.dart';
+import 'package:finalprojectadmin/features/user_orders/presentation/screens/all_order_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,8 +25,10 @@ class BottomNavigationBars extends StatelessWidget {
           } else if (state is BottomnavcontroleShopState) {
             widget = const OfferScreen();
           } else if (state is BottomnavcontroleCartState) {
-            widget = const ListOfOrders();
-          } else if (state is BottomnavcontroleProfileState) {}
+            widget = const AllOrderScreen();
+          } else if (state is BottomnavcontroleProfileState) {
+            widget = DashboardScreen();
+          }
           return SafeArea(
             child: Scaffold(
               // drawer: const AppBarDrawer(),

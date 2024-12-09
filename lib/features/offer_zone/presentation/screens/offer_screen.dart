@@ -1,5 +1,4 @@
 import 'package:finalprojectadmin/core/usecases/common_widgets/snack_bar.dart';
-import 'package:finalprojectadmin/core/usecases/common_widgets/title_text.dart';
 import 'package:finalprojectadmin/features/offer_zone/presentation/bloc/offer_bloc.dart';
 import 'package:finalprojectadmin/features/offer_zone/presentation/screens/adding_banner/adding_banner_screen.dart';
 import 'package:finalprojectadmin/features/offer_zone/presentation/widgets/banner_widget.dart';
@@ -35,17 +34,22 @@ class OfferScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is OfferBannerFetchedState) {
             return Scaffold(
-              backgroundColor: Colors.black,
+              appBar: AppBar(
+                title: Text(
+                  'Offer Banners',
+                  style: TextStyle(color: Colors.white),
+                ),
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.grey.shade800,
+              ),
+              backgroundColor: Colors.grey,
               body: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const TitleText(
-                        title: 'Offer Banners',
-                        color: Colors.white,
-                      ),
                       Expanded(
                         child: ListView.builder(
                           itemBuilder: (BuildContext context, int index) =>
@@ -69,8 +73,17 @@ class OfferScreen extends StatelessWidget {
               ),
             );
           } else {
-            return const Scaffold(
-              backgroundColor: Colors.black,
+            return Scaffold(
+              backgroundColor: Colors.grey,
+              appBar: AppBar(
+                title: Text(
+                  'Offer Banners',
+                  style: TextStyle(color: Colors.white),
+                ),
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.grey.shade800,
+              ),
               body: Center(
                 child: Center(
                   child: CircularProgressIndicator(),

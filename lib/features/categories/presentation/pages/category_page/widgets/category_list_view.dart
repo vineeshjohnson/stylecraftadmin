@@ -29,10 +29,6 @@ class CategoryListView extends StatelessWidget {
   Widget _buildCategoryGridView(List<CategoryModel> categories) {
     return Column(
       children: [
-        const TitleText(
-          title: 'Category Section',
-          color: Colors.white,
-        ),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -41,7 +37,7 @@ class CategoryListView extends StatelessWidget {
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisSpacing: 15,
                 mainAxisSpacing: 15,
-                crossAxisCount: 3,
+                crossAxisCount: 2,
               ),
               itemBuilder: (context, index) {
                 final category = categories[index];

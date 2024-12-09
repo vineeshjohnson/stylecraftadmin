@@ -18,9 +18,11 @@ class BottomNavbarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CurvedNavigationBar(
+      buttonBackgroundColor: Colors.grey,
       animationCurve: Curves.easeInOutCubicEmphasized,
       // buttonBackgroundColor: Colors.black,
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.grey,
+      color: Colors.grey.shade300,
       height: 75,
       items: _list,
       index: 0,

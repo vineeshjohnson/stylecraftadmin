@@ -17,8 +17,16 @@ class CategoryPage extends StatelessWidget {
       create: (context) => CategoryBloc()..add(InitialfetchEvent()),
       child: SafeArea(
         child: Scaffold(
-          appBar: AppBar(),
-          backgroundColor: Colors.black,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.grey.shade800,
+            centerTitle: true,
+            title: Text(
+              'Product Categories',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          backgroundColor: Colors.grey,
           floatingActionButton: const FloatingActionButtonForAddingCategory(),
           body: BlocConsumer<CategoryBloc, CategoryState>(
             listener: (context, state) {
