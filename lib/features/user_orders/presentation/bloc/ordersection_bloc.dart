@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:finalprojectadmin/core/model/order_model.dart';
 import 'package:finalprojectadmin/core/model/product_model.dart';
+import 'package:intl/intl.dart';
 
 part 'ordersection_event.dart';
 part 'ordersection_state.dart';
@@ -23,12 +24,16 @@ class OrdersectionBloc extends Bloc<OrdersectionEvent, OrdersectionState> {
     on<OrderHandlingEvent>((event, emit) async {
       emit(LoadingState());
       String field = fieldSelector(event.orderstate);
-      updateFieldByOrderId(event.order.orderid!, field, true);
-      emit(OrderUpdatedState());
+      bool status =
+          await updateFieldByOrderId(event.order.orderid!, field, true);
+      emit(OrderUpdatedState(success: status));
     });
 
     on<NavigatedToOrderDetailedPage>((event, emit) async {
-      emit(NavigatedToPageState(order: event.order, product: event.product));
+      emit(NavigatedToPageState(
+        order: event.order,
+        product: event.product,
+      ));
     });
   }
 }
@@ -82,10 +87,26 @@ String fieldSelector(String orderstate) {
   }
 }
 
-Future<void> updateFieldByOrderId(
+String dateselector(String orderstate) {
+  if (orderstate == 'packed') {
+    return 'packeddate';
+  } else if (orderstate == 'shipped') {
+    return 'shippeddate';
+  } else if (orderstate == 'outofdelivery') {
+    return 'outfordeliverydate';
+  } else if (orderstate == 'completed') {
+    return 'completeddate';
+  } else {
+    return '';
+  }
+}
+
+Future<bool> updateFieldByOrderId(
     String orderId, String fieldName, dynamic newValue) async {
   try {
-    // Query the 'orders' collection for a document with the specific 'orderid'
+    bool? success;
+    var datefield = dateselector(fieldName);
+    var date = getTodayDateString();
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('orders')
         .where('orderid', isEqualTo: orderId)
@@ -94,14 +115,25 @@ Future<void> updateFieldByOrderId(
     if (querySnapshot.docs.isNotEmpty) {
       DocumentReference docRef = querySnapshot.docs.first.reference;
 
-      await docRef.update({fieldName: newValue});
-
+      await docRef.update({fieldName: newValue, datefield: date});
+      success = true;
       print(
           "$fieldName updated successfully to $newValue for order ID: $orderId");
+      return success;
     } else {
       print("No document found with orderid: $orderId");
+      success = false;
+      return success;
     }
   } catch (e) {
     print("Error updating $fieldName for orderid $orderId: $e");
+    return false;
   }
+}
+
+String getTodayDateString() {
+  DateTime now = DateTime.now();
+  String formattedDate =
+      DateFormat('dd-MMMM-yyyy').format(now); // Format as '12-January-2024'
+  return formattedDate;
 }

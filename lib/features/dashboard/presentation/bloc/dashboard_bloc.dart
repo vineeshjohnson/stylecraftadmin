@@ -9,9 +9,9 @@ part 'dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   DashboardBloc() : super(DashboardInitial()) {
-    on<DashboardEvent>((event, emit) {
-    });
+    on<DashboardEvent>((event, emit) {});
     on<FetchAllOrdersForDashboardEvent>((event, emit) async {
+      emit(LoadingState());
       List<OrderModel> orders = await fetchAllOrders();
       List<ProductModel> products = await fetchAllOrderedProducts(orders);
       int completeorders = completedorders(orders);

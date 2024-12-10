@@ -8,6 +8,8 @@ sealed class DashboardState extends Equatable {
 }
 
 final class DashboardInitial extends DashboardState {}
+final class LoadingState extends DashboardState {}
+
 
 final class AllOrdersFetchedForDashboardState extends DashboardState {
   final int completeorders;

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shimmer/shimmer.dart';
 
 import 'package:finalprojectadmin/core/model/order_model.dart';
 import 'package:finalprojectadmin/core/model/product_model.dart';
@@ -13,17 +12,11 @@ class AllOrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<ProductModel> productModels = [];
-    List<OrderModel> orderModels = [];
-
     return BlocProvider(
       create: (context) => OrdersectionBloc()..add(FetchAllOrderEvent()),
       child: BlocConsumer<OrdersectionBloc, OrdersectionState>(
         listener: (context, state) {
-          if (state is AllOrdersFetchedState) {
-            productModels = state.products;
-            orderModels = state.orders;
-          } else if (state is NavigatedToPageState) {
+          if (state is NavigatedToPageState) {
             Navigator.of(context)
                 .push(
               MaterialPageRoute(
@@ -34,6 +27,7 @@ class AllOrderScreen extends StatelessWidget {
               ),
             )
                 .then((_) {
+              // Re-fetch orders after navigating back
               context.read<OrdersectionBloc>().add(FetchAllOrderEvent());
             });
           }
@@ -51,9 +45,13 @@ class AllOrderScreen extends StatelessWidget {
               elevation: 0,
             ),
             body: state is LoadingState
-                ? _buildShimmerEffect(context)
+                ? const Center(child: CircularProgressIndicator())
                 : state is AllOrdersFetchedState
-                    ? _buildOrderList(context, productModels, orderModels)
+                    ? _buildOrderList(
+                        context,
+                        state.products,
+                        state.orders,
+                      )
                     : const Center(child: Text('No Orders Found')),
           );
         },
@@ -68,172 +66,113 @@ class AllOrderScreen extends StatelessWidget {
   ) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: ListView.separated(
-        itemBuilder: (context, index) => GestureDetector(
-          onTap: () {
-            context.read<OrdersectionBloc>().add(
-                  NavigatedToOrderDetailedPage(
-                    order: orderModels[index],
-                    product: productModels[index],
-                  ),
-                );
-          },
-          child: Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.grey.shade800, Colors.black],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 120,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image:
-                              NetworkImage(productModels[index].imagepath[0]),
-                        ),
+      child: RefreshIndicator(
+        onRefresh: () async {
+          context.read<OrdersectionBloc>().add(FetchAllOrderEvent());
+        },
+        child: ListView.separated(
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                context.read<OrdersectionBloc>().add(
+                      NavigatedToOrderDetailedPage(
+                        order: orderModels[index],
+                        product: productModels[index],
                       ),
-                    ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: getStatusColor(
-                                  trackOrder(orderModels[index])),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              trackOrder(orderModels[index]),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          kheight10,
-                          Text(
-                            'Consumer: ${orderModels[index].address[0]}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            'Product: ${productModels[index].name}',
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            'Price: ₹${orderModels[index].price}',
-                            style: const TextStyle(
-                              color: Colors.greenAccent,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    );
+              },
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
                 ),
-              ),
-            ),
-          ),
-        ),
-        separatorBuilder: (context, index) => kheight20,
-        itemCount: orderModels.length,
-      ),
-    );
-  }
-
-  Widget _buildShimmerEffect(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    return ListView.separated(
-      itemCount: 5, // Display a placeholder for 5 items
-      separatorBuilder: (context, index) => const SizedBox(height: 15),
-      itemBuilder: (context, index) {
-        return Shimmer.fromColors(
-          baseColor: Colors.black,
-          highlightColor: Colors.grey,
-          child: Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Container(
-              width: screenWidth,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    height: 120,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade400,
-                      borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.grey.shade800, Colors.black],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Row(
                       children: [
                         Container(
-                          height: 20,
-                          width: screenWidth * 0.3,
-                          color: Colors.grey.shade400,
+                          height: 120,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(
+                                  productModels[index].imagepath[0]),
+                            ),
+                          ),
                         ),
-                        const SizedBox(height: 10),
-                        Container(
-                          height: 15,
-                          width: screenWidth * 0.5,
-                          color: Colors.grey.shade400,
-                        ),
-                        const SizedBox(height: 5),
-                        Container(
-                          height: 15,
-                          width: screenWidth * 0.4,
-                          color: Colors.grey.shade400,
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: getStatusColor(
+                                      trackOrder(orderModels[index])),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  trackOrder(orderModels[index]),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              kheight10,
+                              Text(
+                                'Consumer: ${orderModels[index].address[0]}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'Product: ${productModels[index].name}',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                'Price: ₹${orderModels[index].price}',
+                                style: const TextStyle(
+                                  color: Colors.greenAccent,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        );
-      },
+            );
+          },
+          separatorBuilder: (context, index) => kheight20,
+          itemCount: orderModels.length,
+        ),
+      ),
     );
   }
 
