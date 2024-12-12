@@ -11,7 +11,6 @@ part 'ordersection_state.dart';
 class OrdersectionBloc extends Bloc<OrdersectionEvent, OrdersectionState> {
   OrdersectionBloc() : super(OrdersectionInitial()) {
     on<OrdersectionEvent>((event, emit) {
-      // TODO: implement event handler
     });
 
     on<FetchAllOrderEvent>((event, emit) async {

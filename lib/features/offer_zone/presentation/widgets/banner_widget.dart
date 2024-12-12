@@ -56,7 +56,7 @@ class BannerWidget extends StatelessWidget {
                 image,
                 height: screenHeight * .28,
                 width: screenWidth,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Shimmer.fromColors(

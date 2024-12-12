@@ -110,12 +110,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
         'imagepath': product.imagepath,
       });
 
-      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Product added successfully!')),
       );
 
-      // Clear fields after successful submission
       _nameController.clear();
       _descriptionController.clear();
       _priceController.clear();
@@ -147,7 +145,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
           key: _formKey,
           child: Column(
             children: [
-              // Product Name
               Textformfields(
                 controller: _nameController,
                 icon: const Icon(Icons.shopping_bag),

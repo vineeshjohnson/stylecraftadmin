@@ -148,7 +148,10 @@ class OrderDetailsScreen extends StatelessWidget {
     }
   }
 
-  Widget _statusContainer(String message, Color color) {
+  Widget _statusContainer(
+    String message,
+    Color color,
+  ) {
     return BottomAppBar(
       color: Colors.white,
       child: Container(

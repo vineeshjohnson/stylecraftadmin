@@ -36,6 +36,7 @@ class AllOrderScreen extends StatelessWidget {
           return Scaffold(
             backgroundColor: Colors.grey,
             appBar: AppBar(
+              automaticallyImplyLeading: false,
               backgroundColor: Colors.blueGrey.shade900,
               title: const Text(
                 'User Orders',
@@ -64,116 +65,153 @@ class AllOrderScreen extends StatelessWidget {
     List<ProductModel> productModels,
     List<OrderModel> orderModels,
   ) {
+    final groupedOrders = groupOrdersByDate(orderModels);
+
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: RefreshIndicator(
         onRefresh: () async {
           context.read<OrdersectionBloc>().add(FetchAllOrderEvent());
         },
-        child: ListView.separated(
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                context.read<OrdersectionBloc>().add(
-                      NavigatedToOrderDetailedPage(
-                        order: orderModels[index],
-                        product: productModels[index],
-                      ),
-                    );
-              },
-              child: Card(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.grey.shade800, Colors.black],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+        child: ListView(
+          children: groupedOrders.entries.map((entry) {
+            final date = entry.key;
+            final orders = entry.value;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Text(
+                    date,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    borderRadius: BorderRadius.circular(15),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 120,
-                          width: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                  productModels[index].imagepath[0]),
+                ),
+                ...orders.asMap().entries.map((orderEntry) {
+                  final order = orderEntry.value;
+                  final product = productModels[orderEntry.key];
+
+                  return GestureDetector(
+                    onTap: () {
+                      context.read<OrdersectionBloc>().add(
+                            NavigatedToOrderDetailedPage(
+                              order: order,
+                              product: product,
                             ),
+                          );
+                    },
+                    child: Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.grey.shade800, Colors.black],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Row(
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
+                                height: 120,
+                                width: 100,
                                 decoration: BoxDecoration(
-                                  color: getStatusColor(
-                                      trackOrder(orderModels[index])),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  trackOrder(orderModels[index]),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(product.imagepath[0]),
                                   ),
                                 ),
                               ),
-                              kheight10,
-                              Text(
-                                'Consumer: ${orderModels[index].address[0]}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                'Product: ${productModels[index].name}',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                'Price: ₹${orderModels[index].price}',
-                                style: const TextStyle(
-                                  color: Colors.greenAccent,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 5),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            getStatusColor(trackOrder(order)),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Text(
+                                        trackOrder(order),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    kheight10,
+                                    Text(
+                                      'Consumer: ${order.address[0]}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      'Product: ${product.name}',
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      'Price: ₹${order.price}',
+                                      style: const TextStyle(
+                                        color: Colors.greenAccent,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              ),
+                  );
+                }),
+              ],
             );
-          },
-          separatorBuilder: (context, index) => kheight20,
-          itemCount: orderModels.length,
+          }).toList(),
         ),
       ),
     );
+  }
+
+  Map<String, List<OrderModel>> groupOrdersByDate(List<OrderModel> orders) {
+    final groupedOrders = <String, List<OrderModel>>{};
+
+    for (var order in orders) {
+      final date = order.date; // Use the raw string date here
+      if (!groupedOrders.containsKey(date)) {
+        groupedOrders[date] = [];
+      }
+      groupedOrders[date]!.add(order);
+    }
+
+    return groupedOrders;
   }
 
   Color getStatusColor(String status) {
