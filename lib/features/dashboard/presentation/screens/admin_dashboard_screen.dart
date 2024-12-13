@@ -1,8 +1,10 @@
 import 'package:finalprojectadmin/core/usecases/common_widgets/sized_boxes.dart';
+import 'package:finalprojectadmin/features/auth/presentation/pages/login_screen/login_screen.dart';
 import 'package:finalprojectadmin/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -33,6 +35,51 @@ class DashboardScreen extends StatelessWidget {
           return Scaffold(
             backgroundColor: Colors.grey,
             appBar: AppBar(
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text(
+                            'Logout',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          content: const Text('Do you want to Logout?'),
+                          icon: const Icon(
+                            Icons.logout,
+                            color: Colors.red,
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pop(); 
+                              },
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                removeUserId();
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    (MaterialPageRoute(
+                                        builder: (context) => LoginScreen())),
+                                    (route) => false);
+                              },
+                              child: const Text(
+                                'Yes',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.logout))
+              ],
               automaticallyImplyLeading: false,
               title: const Text(
                 "Dashboard",
@@ -146,85 +193,6 @@ class DashboardScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-
-                        // Container(
-                        //   height: 200,
-                        //   decoration: BoxDecoration(
-                        //     color: Colors.white,
-                        //     borderRadius: BorderRadius.circular(12),
-                        //     boxShadow: [
-                        //       BoxShadow(
-                        //         color: Colors.grey.withOpacity(0.3),
-                        //         blurRadius: 6,
-                        //         offset: const Offset(0, 4),
-                        //       ),
-                        //     ],
-                        //   ),
-                        //   child: Padding(
-                        //     padding: const EdgeInsets.all(16.0),
-                        //     child: BarChart(BarChartData(
-                        //       borderData: FlBorderData(show: true),
-                        //       gridData: FlGridData(show: true),
-                        //       titlesData: FlTitlesData(
-                        //         leftTitles: AxisTitles(
-                        //           sideTitles: SideTitles(
-                        //             showTitles: true,
-                        //             getTitlesWidget: (value, meta) {
-                        //               return Text(
-                        //                 value.toInt().toString(),
-                        //                 style: const TextStyle(
-                        //                     color: Colors.black, fontSize: 12),
-                        //               );
-                        //             },
-                        //           ),
-                        //         ),
-                        //         bottomTitles: AxisTitles(
-                        //           sideTitles: SideTitles(
-                        //             showTitles: true,
-                        //             getTitlesWidget: (value, meta) {
-                        //               switch (value.toInt()) {
-                        //                 case 0:
-                        //                   return const Text("Jan",
-                        //                       style: TextStyle(fontSize: 12));
-                        //                 case 1:
-                        //                   return const Text("Feb",
-                        //                       style: TextStyle(fontSize: 12));
-                        //                 case 2:
-                        //                   return const Text("Mar",
-                        //                       style: TextStyle(fontSize: 12));
-                        //                 case 3:
-                        //                   return const Text("Apr",
-                        //                       style: TextStyle(fontSize: 12));
-                        //                 case 4:
-                        //                   return const Text("May",
-                        //                       style: TextStyle(fontSize: 12));
-                        //                 default:
-                        //                   return const Text("");
-                        //               }
-                        //             },
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       barGroups: [
-                        //         BarChartGroupData(x: 0, barRods: [
-                        //           BarChartRodData(toY: 1, color: Colors.green)
-                        //         ]),
-                        //         BarChartGroupData(x: 1, barRods: [
-                        //           BarChartRodData(toY: 15, color: Colors.green)
-                        //         ]),
-                        //         BarChartGroupData(x: 2, barRods: [
-                        //           BarChartRodData(toY: 12, color: Colors.green)
-                        //         ]),
-                        //         BarChartGroupData(x: 3, barRods: [
-                        //           BarChartRodData(toY: 55, color: Colors.green)
-                        //         ]),
-                        //         BarChartGroupData(x: 4, barRods: [
-                        //           BarChartRodData(toY: 25, color: Colors.green)
-                        //         ]),
-                        //       ],
-                        //     )),
-                        //   ),
-                        // ),
                         const SizedBox(height: 24),
 
                         // Recent Activities Section
@@ -237,7 +205,7 @@ class DashboardScreen extends StatelessWidget {
                         ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 5, // Replace with your dynamic count
+                          itemCount: 5, 
                           separatorBuilder: (_, __) => const Divider(),
                           itemBuilder: (context, index) {
                             return ListTile(
@@ -308,4 +276,9 @@ class DashboardScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> removeUserId() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.remove('user_id');
 }

@@ -38,7 +38,7 @@ Widget loginFields(TextEditingController emailController,
         },
         controller: emailController,
         icon: const Icon(Icons.email),
-        labeltext: 'Email',
+        labeltext: 'Admin ID',
       ),
       kheight20,
       Textformfields(

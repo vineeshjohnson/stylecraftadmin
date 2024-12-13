@@ -27,7 +27,7 @@ class LoginScreen extends StatelessWidget {
       },
       listener: (context, state) {
         if (state is AuthenticationSuccessState) {
-          Navigator.of(context).push(MaterialPageRoute(
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => const BottomNavigationBars()));
           snackBar(context, successReturn(1));
         } else if (state is AuthenticationErrorState) {

@@ -44,101 +44,128 @@ class ProductDetailScreen extends StatelessWidget {
           final imagepath = product['imagepath'] as List<dynamic>? ?? [];
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Product Name
-                Text(
-                  name,
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-
-                // Product Price
-                Text(
-                  'Price: \$${price.toString()}',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
-
-                // Product Description
-                Text(
-                  'Description: $description',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 8),
-
-                // Product Brand
-                Text(
-                  'Brand: $brand',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 8),
-
-                // Product Quantity
-                Text(
-                  'Quantity: ${quantity.toString()}',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 16),
-
-                // Available Sizes
-                const Text('Available Sizes:', style: TextStyle(fontSize: 18)),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 16,
-                  children: [
-                    Chip(label: Text('Small: ${small ? 'Yes' : 'No'}')),
-                    Chip(label: Text('Medium: ${medium ? 'Yes' : 'No'}')),
-                    Chip(label: Text('Large: ${large ? 'Yes' : 'No'}')),
-                    Chip(label: Text('XL: ${xl ? 'Yes' : 'No'}')),
-                    Chip(label: Text('XXL: ${xxl ? 'Yes' : 'No'}')),
-                  ],
-                ),
-                const SizedBox(height: 16),
-
-                // Product Images Section
-                const Text('Images:', style: TextStyle(fontSize: 18)),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 200,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: imagepath.length,
-                    itemBuilder: (context, index) {
-                      final imageUrl = imagepath[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Container(
-                          width: 150,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Product Images Carousel
+                  SizedBox(
+                    height: 250,
+                    child: PageView.builder(
+                      itemCount: imagepath.length,
+                      itemBuilder: (context, index) {
+                        final imageUrl = imagepath[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(10),
                             child: Image.network(
                               imageUrl,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(Icons.broken_image),
+                                  const Icon(Icons.broken_image, size: 100),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16),
+
+                  // Product Details Section
+                  Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Price: \$${price.toString()}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Brand: $brand',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Description:',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(description,
+                              style: const TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Available Sizes Section
+                  Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Available Sizes:',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 16,
+                            children: [
+                              Chip(
+                                  label:
+                                      Text('Small: ${small ? 'Yes' : 'No'}')),
+                              Chip(
+                                  label:
+                                      Text('Medium: ${medium ? 'Yes' : 'No'}')),
+                              Chip(
+                                  label:
+                                      Text('Large: ${large ? 'Yes' : 'No'}')),
+                              Chip(label: Text('XL: ${xl ? 'Yes' : 'No'}')),
+                              Chip(label: Text('XXL: ${xxl ? 'Yes' : 'No'}')),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Action Buttons
+                ],
+              ),
             ),
           );
         },
