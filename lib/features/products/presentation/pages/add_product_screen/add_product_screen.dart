@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:finalprojectadmin/core/usecases/common_widgets/sized_boxes.dart';
+import 'package:finalprojectadmin/features/products/presentation/widgets/discount_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:finalprojectadmin/core/model/product_model.dart';
@@ -24,6 +26,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
+  final TextEditingController discountController = TextEditingController();
 
   // Image Pickers
   List<XFile?> _selectedImages = List.filled(3, null);
@@ -82,6 +85,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         offeritem: options['Offer Item']!,
         cod: options['Cash on Delivery']!,
         imagepath: [],
+        discountpercent: int.parse(discountController.text)
       );
 
       await _productHelper.addProduct(product, _selectedImages);
@@ -142,6 +146,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
               const SizedBox(height: 20),
               _buildCheckboxGroup('Options:', options),
               const SizedBox(height: 20),
+              DiscountDropdownField(
+                  controller: discountController,
+                  labelText: 'Discount Percentage',
+                  icon: Icons.percent),
+              kheight30,
               isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : NormalButton(
@@ -231,7 +240,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               });
             },
           );
-        }).toList(),
+        }),
       ],
     );
   }

@@ -56,6 +56,7 @@ class ProductHelper {
       'offeritem': product.offeritem,
       'cod': product.cod,
       'imagepath': imageUrls,
+      'discountpercent': product.discountpercent
     });
   }
 }

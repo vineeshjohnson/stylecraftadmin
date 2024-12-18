@@ -27,7 +27,7 @@ class BottomNavigationBars extends StatelessWidget {
           } else if (state is BottomnavcontroleCartState) {
             widget = const AllOrderScreen();
           } else if (state is BottomnavcontroleProfileState) {
-            widget = DashboardScreen();
+            widget = const DashboardScreen();
           }
           return SafeArea(
             child: Scaffold(

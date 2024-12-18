@@ -1,16 +1,49 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:finalprojectadmin/core/model/order_model.dart';
+import 'package:finalprojectadmin/core/model/product_model.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:finalprojectadmin/core/usecases/common_widgets/sized_boxes.dart';
 import 'package:finalprojectadmin/features/auth/presentation/pages/login_screen/login_screen.dart';
 import 'package:finalprojectadmin/features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    List<OrderModel> orders = [];
+    List<ProductModel> products = [];
+
+    List<String> fields = [
+      'confirmed',
+      'packed',
+      'shipped',
+      'outofdelivery',
+      'completed',
+      'cancelled',
+      'none'
+    ];
+    List<String> categories = [
+      'Confirmed Orders',
+      'Packed Orders',
+      'Shipped Orders',
+      'Out For Delivery',
+      'Completed Orders',
+      'Cancelled Orders'
+    ];
+    List<Icon> icons = [
+      const Icon(Icons.check_box),
+      const Icon(Icons.rectangle),
+      const Icon(Icons.local_shipping),
+      const Icon(Icons.bike_scooter),
+      const Icon(Icons.person),
+      const Icon(Icons.cancel)
+    ];
     bool isloading = false;
     int completed = 0;
     int incompleted = 0;
@@ -29,6 +62,8 @@ class DashboardScreen extends StatelessWidget {
             cancelled = state.cancelledorders;
             total = state.totalturnover;
             isloading = false;
+            orders = state.orders;
+            products = state.products;
           }
         },
         builder: (context, state) {
@@ -53,8 +88,7 @@ class DashboardScreen extends StatelessWidget {
                           actions: [
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context)
-                                    .pop(); 
+                                Navigator.of(context).pop();
                               },
                               child: const Text(
                                 'Cancel',
@@ -78,7 +112,7 @@ class DashboardScreen extends StatelessWidget {
                         ),
                       );
                     },
-                    icon: Icon(Icons.logout))
+                    icon: const Icon(Icons.logout))
               ],
               automaticallyImplyLeading: false,
               title: const Text(
@@ -91,7 +125,7 @@ class DashboardScreen extends StatelessWidget {
               iconTheme: const IconThemeData(color: Colors.black),
             ),
             body: isloading
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : SingleChildScrollView(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -205,24 +239,12 @@ class DashboardScreen extends StatelessWidget {
                         ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 5, 
+                          itemCount: categories.length,
                           separatorBuilder: (_, __) => const Divider(),
                           itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.blue.shade100,
-                                child: const Icon(Icons.shopping_bag,
-                                    color: Colors.blue),
-                              ),
-                              title: const Text("Order #12345"),
-                              subtitle: const Text("Sold 3 items for ₹1,200"),
-                              trailing: Text(
-                                "Completed",
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                            return SampleWidget(
+                              icon: icons[index],
+                              text: categories[index],
                             );
                           },
                         ),
@@ -278,7 +300,47 @@ class DashboardScreen extends StatelessWidget {
   }
 }
 
+class SampleWidget extends StatelessWidget {
+  const SampleWidget({
+    super.key,
+    required this.icon,
+    required this.text,
+  });
+  final Icon icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: Colors.blue.shade100,
+        child: icon,
+      ),
+      title: Text(text),
+    );
+  }
+}
+
 Future<void> removeUserId() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.remove('user_id');
+}
+
+List<BarChartGroupData> _getBarChartGroups() {
+  // Example data: replace with dynamic data
+  final monthlyCounts = [50, 75, 100, 125, 80, 95, 60, 85, 110, 120, 90, 70];
+  return List.generate(
+    monthlyCounts.length,
+    (index) => BarChartGroupData(
+      x: index,
+      barRods: [
+        BarChartRodData(
+          toY: monthlyCounts[index].toDouble(),
+          color: Colors.blue,
+          width: 16,
+          borderRadius: BorderRadius.circular(4),
+        ),
+      ],
+    ),
+  );
 }

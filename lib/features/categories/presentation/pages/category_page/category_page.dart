@@ -21,7 +21,7 @@ class CategoryPage extends StatelessWidget {
             automaticallyImplyLeading: false,
             backgroundColor: Colors.grey.shade800,
             centerTitle: true,
-            title: Text(
+            title: const Text(
               'Product Categories',
               style: TextStyle(color: Colors.white),
             ),

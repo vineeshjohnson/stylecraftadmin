@@ -27,7 +27,6 @@ class AllOrderScreen extends StatelessWidget {
               ),
             )
                 .then((_) {
-              // Re-fetch orders after navigating back
               context.read<OrdersectionBloc>().add(FetchAllOrderEvent());
             });
           }

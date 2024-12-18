@@ -9,10 +9,10 @@ class OrderDetailsScreen extends StatelessWidget {
   final ProductModel product;
 
   const OrderDetailsScreen({
-    Key? key,
+    super.key,
     required this.order,
     required this.product,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +31,14 @@ class OrderDetailsScreen extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(
+              title: const Text(
                 'Order Details',
                 style: TextStyle(color: Colors.black),
               ),
               centerTitle: true,
               backgroundColor: Colors.white,
               elevation: 0,
-              iconTheme: IconThemeData(color: Colors.black),
+              iconTheme: const IconThemeData(color: Colors.black),
             ),
             body: SingleChildScrollView(
               child: Padding(
@@ -49,7 +49,7 @@ class OrderDetailsScreen extends StatelessWidget {
                     // Order Status Section
                     _sectionTitle("Order Status"),
                     _statusTimeline(order),
-                    Divider(),
+                    const Divider(),
 
                     // Product Details Section
                     _sectionTitle("Product Details"),
@@ -69,7 +69,7 @@ class OrderDetailsScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +83,7 @@ class OrderDetailsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Divider(),
+                    const Divider(),
 
                     // Order Details Section
                     _sectionTitle("Order Details"),
@@ -92,7 +92,7 @@ class OrderDetailsScreen extends StatelessWidget {
                     _detailRow("Order Time", order.time),
                     _detailRow("Quantity", order.count.toString()),
                     _detailRow("Total Price", "₹${order.price}"),
-                    Divider(),
+                    const Divider(),
 
                     // Address Section
                     _sectionTitle("Delivery Address"),
@@ -125,14 +125,14 @@ class OrderDetailsScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(1.0),
           child: isloading
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: 12,
                       horizontal: 20,
                     ),
@@ -140,7 +140,7 @@ class OrderDetailsScreen extends StatelessWidget {
                   onPressed: action,
                   child: Text(
                     _getButtonText(order),
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
         ),
@@ -175,7 +175,7 @@ class OrderDetailsScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
           color: Colors.black87,
@@ -226,7 +226,7 @@ class OrderDetailsScreen extends StatelessWidget {
                   size: 18,
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               // Step Title
               Text(
                 steps[i],
@@ -254,7 +254,7 @@ class OrderDetailsScreen extends StatelessWidget {
 
   Widget _addressSection(List<dynamic>? address) {
     if (address == null || address.isEmpty) {
-      return Text(
+      return const Text(
         "No Address Provided",
         style: TextStyle(fontSize: 16, color: Colors.red),
       );
@@ -268,7 +268,7 @@ class OrderDetailsScreen extends StatelessWidget {
         for (int i = 3; i < address.length; i++)
           Text(
             address[i],
-            style: TextStyle(fontSize: 16, color: Colors.black54),
+            style: const TextStyle(fontSize: 16, color: Colors.black54),
           ),
       ],
     );
@@ -282,7 +282,7 @@ class OrderDetailsScreen extends StatelessWidget {
         children: [
           Text(
             "$label: ",
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
               color: Colors.black87,
@@ -291,7 +291,7 @@ class OrderDetailsScreen extends StatelessWidget {
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 16, color: Colors.black54),
+              style: const TextStyle(fontSize: 16, color: Colors.black54),
             ),
           ),
         ],

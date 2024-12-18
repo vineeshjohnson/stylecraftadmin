@@ -35,7 +35,7 @@ class OfferScreen extends StatelessWidget {
           if (state is OfferBannerFetchedState) {
             return Scaffold(
               appBar: AppBar(
-                title: Text(
+                title: const Text(
                   'Offer Banners',
                   style: TextStyle(color: Colors.white),
                 ),
@@ -76,7 +76,7 @@ class OfferScreen extends StatelessWidget {
             return Scaffold(
               backgroundColor: Colors.grey,
               appBar: AppBar(
-                title: Text(
+                title: const Text(
                   'Offer Banners',
                   style: TextStyle(color: Colors.white),
                 ),
@@ -84,7 +84,7 @@ class OfferScreen extends StatelessWidget {
                 automaticallyImplyLeading: false,
                 backgroundColor: Colors.grey.shade800,
               ),
-              body: Center(
+              body: const Center(
                 child: Center(
                   child: CircularProgressIndicator(),
                 ),
